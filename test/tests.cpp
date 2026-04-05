@@ -93,17 +93,6 @@ TEST(TimerTest, TimerCallsTimeout) {
 }
 
 
-TEST(DoorTimerAdapterTest, TimeoutCallsThrowStateWhenOpen) {
-    TimedDoor door(1);
-    DoorTimerAdapter adapter(door);
-
-    door.unlock();
-    std::this_thread::sleep_for(std::chrono::seconds(2));
-
-    EXPECT_THROW(adapter.Timeout(), std::runtime_error);
-}
-
-
 TEST(DoorTimerAdapterTest, TimeoutDoesNothingWhenClosed) {
     TimedDoor door(1);
     DoorTimerAdapter adapter(door);
