@@ -40,7 +40,6 @@ class TimedDoor : public Door {
   bool isOpened;
   std::mutex doorMutex;
   std::thread timerThread;
-  bool timerRunning;
  public:
   explicit TimedDoor(int);
   ~TimedDoor() override;
