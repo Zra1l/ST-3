@@ -65,6 +65,12 @@ TEST_F(TimedDoorTest, UnlockTwiceThenLock) {
     ASSERT_FALSE(door->isDoorOpened());
 }
 
+TEST_F(TimedDoorTest, TimerTriggersExceptionIfDoorStillOpen) {
+    door->unlock();
+    std::this_thread::sleep_for(std::chrono::seconds(timeout + 1));
+    EXPECT_THROW(door->throwState(), std::runtime_error);
+}
+
 TEST_F(TimedDoorTest, NoExceptionIfDoorClosedBeforeTimeout) {
     door->unlock();
     std::this_thread::sleep_for(std::chrono::milliseconds(500));
@@ -93,8 +99,11 @@ TEST(TimerTest, TimerCallsTimeout) {
 
     EXPECT_CALL(mockClient, Timeout()).Times(1);
 
-    timer.tregister(1, &mockClient);
+    std::thread t = timer.tregister(1, &mockClient);
     std::this_thread::sleep_for(std::chrono::seconds(2));
+    if (t.joinable()) {
+        t.join();
+    }
 }
 
 TEST(DoorTimerAdapterTest, TimeoutCallsThrowStateWhenDoorOpen) {

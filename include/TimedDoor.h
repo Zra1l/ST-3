@@ -52,7 +52,7 @@ class TimedDoor : public Door {
 
 class Timer {
  public:
-  void tregister(int, TimerClient*);
+  std::thread tregister(int, TimerClient*);
 };
 
 #endif  // INCLUDE_TIMEDDOOR_H_
