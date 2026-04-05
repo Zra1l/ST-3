@@ -1,5 +1,7 @@
 include(FetchContent)
 
+set(gtest_force_shared_crt ON)
+
 FetchContent_Declare(
   googletest
   GIT_REPOSITORY https://github.com/google/googletest.git
@@ -24,3 +26,4 @@ target_link_libraries(${PROJECT_NAME}.test
 
 install(TARGETS ${PROJECT_NAME}.test
         DESTINATION "${tool_dest}")
+        
