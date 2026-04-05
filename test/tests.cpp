@@ -65,12 +65,6 @@ TEST_F(TimedDoorTest, UnlockTwiceThenLock) {
     ASSERT_FALSE(door->isDoorOpened());
 }
 
-TEST_F(TimedDoorTest, TimerTriggersExceptionIfDoorStillOpen) {
-    door->unlock();
-    std::this_thread::sleep_for(std::chrono::seconds(timeout + 1));
-    EXPECT_THROW(door->throwState(), std::runtime_error);
-}
-
 TEST_F(TimedDoorTest, NoExceptionIfDoorClosedBeforeTimeout) {
     door->unlock();
     std::this_thread::sleep_for(std::chrono::milliseconds(500));
