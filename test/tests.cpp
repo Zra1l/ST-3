@@ -93,33 +93,24 @@ TEST(TimerTest, TimerCallsTimeout) {
 }
 
 
-class MockTimedDoor : public TimedDoor {
- public:
-    explicit MockTimedDoor(int timeout) : TimedDoor(timeout) {}
-    MOCK_METHOD(bool, isDoorOpened, (), (override));
-    MOCK_METHOD(void, throwState, (), (override));
-};
-
-
 TEST(DoorTimerAdapterTest, TimeoutCallsThrowStateWhenOpen) {
-    MockTimedDoor mockDoor(1);
-    DoorTimerAdapter adapter(mockDoor);
+    TimedDoor door(1);
+    DoorTimerAdapter adapter(door);
 
-    EXPECT_CALL(mockDoor, isDoorOpened()).WillOnce(Return(true));
-    EXPECT_CALL(mockDoor, throwState()).Times(1);
+    door.unlock();
+    std::this_thread::sleep_for(std::chrono::seconds(2));
 
-    adapter.Timeout();
+    EXPECT_THROW(adapter.Timeout(), std::runtime_error);
 }
 
 
 TEST(DoorTimerAdapterTest, TimeoutDoesNothingWhenClosed) {
-    MockTimedDoor mockDoor(1);
-    DoorTimerAdapter adapter(mockDoor);
+    TimedDoor door(1);
+    DoorTimerAdapter adapter(door);
 
-    EXPECT_CALL(mockDoor, isDoorOpened()).WillOnce(Return(false));
-    EXPECT_CALL(mockDoor, throwState()).Times(0);
+    door.lock();
 
-    adapter.Timeout();
+    EXPECT_NO_THROW(adapter.Timeout());
 }
 
 
